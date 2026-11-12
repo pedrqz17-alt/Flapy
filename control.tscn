@@ -1,0 +1,82 @@
+[gd_scene format=3 uid="uid://bs0o1hsjl06og"]
+
+[ext_resource type="Script" uid="uid://be1ylmfgvqwj7" path="res://control.gd" id="1_0fbet"]
+[ext_resource type="FontFile" uid="uid://cumr4lg31gjkn" path="res://Assets/Press_Start_2P/PressStart2P-Regular.ttf" id="2_62e2m"]
+[ext_resource type="Texture2D" uid="uid://cu1024nbt1tnk" path="res://IMG-20261112-WA3953.jpg" id="2_qtu10"]
+
+[node name="Control" type="Control" unique_id=1818584198]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_0fbet")
+
+[node name="Fundo" type="TextureRect" parent="." unique_id=1219797660]
+layout_mode = 0
+offset_left = -399.00003
+offset_top = -55.0
+offset_right = 1521.0
+offset_bottom = 1225.0
+scale = Vector2(0.69976014, 0.97257304)
+texture = ExtResource("2_qtu10")
+
+[node name="FLAPPYBIRD" type="Label" parent="." unique_id=870224597]
+modulate = Color(0.76219577, 0.5249512, 0.5632203, 1)
+visibility_layer = 52
+texture_filter = 5
+layout_mode = 0
+offset_left = 66.0
+offset_top = 203.0
+offset_right = 274.0
+offset_bottom = 226.0
+scale = Vector2(2.044222, 3.867018)
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("2_62e2m")
+text = "FLAPPY BIRD 2"
+
+[node name="Button" type="Button" parent="." unique_id=1208393400]
+texture_filter = 1
+layout_mode = 0
+offset_left = 123.0
+offset_top = 784.0
+offset_right = 217.55402
+offset_bottom = 821.969
+scale = Vector2(3.4319127, 3.5397894)
+theme_override_colors/font_color = Color(0.875, 0.875, 0.875, 1)
+theme_override_colors/font_focus_color = Color(0.95, 0.95, 0.95, 1)
+theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_color = Color(0.95, 0.95, 0.95, 1)
+theme_override_colors/font_hover_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/icon_normal_color = Color(1, 1, 1, 1)
+theme_override_colors/icon_focus_color = Color(1, 1, 1, 1)
+theme_override_colors/icon_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/icon_hover_color = Color(1, 1, 1, 1)
+theme_override_colors/icon_hover_pressed_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("2_62e2m")
+text = "JOGAR"
+
+[node name="LabelRecorde" type="Label" parent="." unique_id=477922800]
+layout_mode = 0
+offset_left = 27.0
+offset_top = 47.0
+offset_right = 108.0
+offset_bottom = 70.0
+scale = Vector2(2.29, 2.29)
+theme_override_colors/font_color = Color(0.2961014, 0.14470667, 1.2032687e-07, 1)
+theme_override_fonts/font = ExtResource("2_62e2m")
+text = "Recorde: 0"
+
+[node name="Text" type="Label" parent="." unique_id=277593174]
+top_level = true
+y_sort_enabled = true
+layout_mode = 0
+offset_left = 349.0
+offset_top = 1090.0
+offset_right = 456.0
+offset_bottom = 1113.0
+scale = Vector2(1.762616, 1.9178376)
+text = "Versão: 0.1.23"
+
+[connection signal="pressed" from="Button" to="." method="_on_button_pressed"]

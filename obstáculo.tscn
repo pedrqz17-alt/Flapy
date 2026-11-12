@@ -1,0 +1,47 @@
+[gd_scene format=3 uid="uid://brnbj7m0depiu"]
+
+[ext_resource type="Texture2D" uid="uid://bsd0h11txm0be" path="res://Assets/1794420952417.png" id="1_6lhg7"]
+[ext_resource type="Script" uid="uid://cl353i1raiukj" path="res://obstáculo.gd" id="1_32act"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_g7b7a"]
+size = Vector2(239.53824, 608.1432)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_gyc6d"]
+size = Vector2(155, 391)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_6qx4q"]
+size = Vector2(155, 266)
+
+[node name="Obstaculo" type="Node2D" unique_id=231374339]
+script = ExtResource("1_32act")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=212364089]
+z_index = 1
+y_sort_enabled = true
+position = Vector2(235, 179)
+scale = Vector2(0.693, 0.772)
+texture = ExtResource("1_6lhg7")
+
+[node name="cima" type="Area2D" parent="Sprite2D" unique_id=1856042156]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Sprite2D/cima" unique_id=1820094231]
+position = Vector2(14.43002, -506.47668)
+scale = Vector2(1, 1.0000007)
+shape = SubResource("RectangleShape2D_g7b7a")
+
+[node name="baixo" type="Area2D" parent="." unique_id=1721578832]
+position = Vector2(-47, -122)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="baixo" unique_id=1164890634]
+position = Vector2(295, 633)
+shape = SubResource("RectangleShape2D_gyc6d")
+
+[node name="Ponto" type="Area2D" parent="." unique_id=626583575]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Ponto" unique_id=512077950]
+position = Vector2(242, 141)
+shape = SubResource("RectangleShape2D_6qx4q")
+
+[connection signal="body_entered" from="Sprite2D/cima" to="." method="_on_cima_body_entered"]
+[connection signal="body_entered" from="baixo" to="." method="_on_baixo_body_entered"]
+[connection signal="body_entered" from="Ponto" to="." method="_on_ponto_body_entered"]

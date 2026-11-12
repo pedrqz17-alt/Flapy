@@ -1,0 +1,49 @@
+[gd_scene format=3 uid="uid://clegul5tv7fcf"]
+
+[ext_resource type="Script" uid="uid://brnjgv8blj7vy" path="res://bird.gd" id="1_6w2wo"]
+[ext_resource type="Texture2D" uid="uid://bxiwtti0etk8l" path="res://Assets/1794337020761.png" id="2_67or5"]
+[ext_resource type="Texture2D" uid="uid://4nuxjc2trok1" path="res://Assets/1794337078484.png" id="3_mw7lr"]
+[ext_resource type="Texture2D" uid="uid://bulm5lv80efgg" path="res://Assets/1794337138874.png" id="4_45gv6"]
+[ext_resource type="AudioStream" uid="uid://cvwjwbl8dc3qh" path="res://Assets/Music.mp3" id="5_67or5"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_g7b7a"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_67or5")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_mw7lr")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_45gv6")
+}],
+"loop": 1,
+"name": &"default",
+"speed": 5.0
+}]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_gyc6d"]
+radius = 180.88745
+height = 484.6416
+
+[node name="Node2D" type="Node2D" unique_id=957541822]
+
+[node name="Bird" type="CharacterBody2D" parent="." unique_id=1456720485]
+position = Vector2(354, 703)
+scale = Vector2(0.293, 0.293)
+script = ExtResource("1_6w2wo")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Bird" unique_id=1612623949]
+position = Vector2(0, -139.30348)
+sprite_frames = SubResource("SpriteFrames_g7b7a")
+frame = 2
+frame_progress = 1.0
+speed_scale = 1.2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Bird" unique_id=926328032]
+position = Vector2(34.129677, -61.433357)
+shape = SubResource("CapsuleShape2D_gyc6d")
+
+[node name="SomMusic" type="AudioStreamPlayer2D" parent="." unique_id=1991372696]
+stream = ExtResource("5_67or5")
