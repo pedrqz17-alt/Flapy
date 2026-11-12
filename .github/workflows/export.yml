@@ -16,29 +16,88 @@ jobs:
           unzip -q Godot_v4.2.1-stable_export_templates.tpz
           mv templates/* ~/.local/share/godot/export_templates/4.2.1.stable/
 
-      - name: Criar assinatura e arrumar preset
+      - name: Recriar preset do zero
         run: |
           keytool -keyalg RSA -genkeypair -alias androiddebugkey -keypass android -keystore debug.keystore -storepass android -dname "CN=Android Debug,O=Android,C=US" -validity 9999
-          python3 -c "
-          import pathlib, re
-          p = pathlib.Path('export_presets.cfg')
-          t = p.read_text()
-          # 1. Assinatura
-          t = t.replace('keystore/debug=\"\"', 'keystore/debug=\"debug.keystore\"')
-          t = t.replace('keystore/debug_user=\"\"', 'keystore/debug_user=\"androiddebugkey\"')
-          t = t.replace('keystore/debug_password=\"\"', 'keystore/debug_password=\"android\"')
-          # 2. Nome do pacote - o que estava faltando
-          # Se já tem uma linha application/config/name, troca ela
-          if 'application/config/name=' in t:
-              t = re.sub(r'application/config/name=\".*?\"', 'application/config/name=\"com.pedrqz.flappy\"', t)
-          else:
-              t += '\napplication/config/name=\"com.pedrqz.flappy\"\n'
-          # Garante que a assinatura existe mesmo se as linhas não existiam
-          if 'keystore/debug=' not in t:
-              t += '\nkeystore/debug=\"debug.keystore\"\nkeystore/debug_user=\"androiddebugkey\"\nkeystore/debug_password=\"android\"\n'
-          p.write_text(t)
-          print(p.read_text())
-          "
+          cat > export_presets.cfg << 'EOF'
+          [preset.0]
+          name="Android"
+          platform="Android"
+          runnable=true
+          dedicated_server=false
+          custom_features=""
+          export_filter="all_resources"
+          include_filter=""
+          exclude_filter=""
+          export_path=""
+          patch_list=PackedStringArray()
+          script_export_mode=1
+          script_encryption_key=""
+
+          [preset.0.options]
+          texture_format/bptc=false
+          texture_format/etc=false
+          texture_format/etc2=false
+          texture_format/s3tc=true
+          custom_template/debug=""
+          custom_template/release=""
+          gradle_build/use_gradle_build=false
+          gradle_build/gradle_build_directory="res://android/build"
+          gradle_build/android_sdk_path=""
+          gradle_build/debug_export_format=0
+          gradle_build/release_export_format=0
+          gradle_build/use_custom_build_sdk=false
+          gradle_build/custom_build_sdk_min=""
+          gradle_build/min_sdk=""
+          gradle_build/target_sdk=""
+          architectures/armeabi-v7a=true
+          architectures/arm64-v8a=true
+          architectures/x86=false
+          architectures/x86_64=false
+          version/code=1
+          version/name="1.0"
+          package/unique_name="com.pedrqz.flappy"
+          package/name="Flappy"
+          package/signed=true
+          package/app_category=0
+          package/retain_data_on_uninstall=false
+          package/exclude_from_recents=false
+          launcher_icons/main_192x192=""
+          launcher_icons/main_144x144=""
+          launcher_icons/main_96x96=""
+          launcher_icons/main_72x72=""
+          launcher_icons/main_48x48=""
+          launcher_icons/main_36x36=""
+          launcher_icons/adaptive_foreground_432x432=""
+          launcher_icons/adaptive_background_432x432=""
+          graphics/opengl_debug=false
+          xr_features/xr_mode=0
+          xr_features/hand_tracking=0
+          xr_features/hand_tracking_frequency=0
+          xr_features/passthrough=0
+          one_click_deploy/clear_previous_install=false
+          permissions/custom_permissions=PackedStringArray()
+          keystore/debug="debug.keystore"
+          keystore/debug_user="androiddebugkey"
+          keystore/debug_password="android"
+          keystore/release=""
+          keystore/release_user=""
+          keystore/release_password=""
+          keystore/key_alias=""
+          keystore/release_key_alias=""
+          keystore/release_key_password=""
+          apk_expansion/enable=false
+          apk_expansion/SALT=""
+          apk_expansion/public_key=""
+          permissions/access_network_state=false
+          permissions/camera=false
+          permissions/read_external_storage=false
+          permissions/write_external_storage=false
+          permissions/record_audio=false
+          permissions/vibrate=false
+          permissions/internet=false
+          EOF
+          cat export_presets.cfg
 
       - name: Exportar APK
         run: |
