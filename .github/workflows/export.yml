@@ -3,32 +3,14 @@ on: [push]
 jobs:
   export:
     runs-on: ubuntu-latest
+    container:
+      image: barichello/godot-ci:4.2.1
     steps:
       - uses: actions/checkout@v4
 
-      - name: Usar SDK que já vem no GitHub
-        run: |
-          echo "ANDROID_HOME=/usr/local/lib/android/sdk" >> $GITHUB_ENV
-          echo "ANDROID_SDK_ROOT=/usr/local/lib/android/sdk" >> $GITHUB_ENV
-          ls /usr/local/lib/android/sdk/build-tools/
-          yes | /usr/local/lib/android/sdk/cmdline-tools/latest/bin/sdkmanager "build-tools;34.0.0" "platforms;android-34" "platform-tools" || true
-          ls /usr/local/lib/android/sdk/build-tools/
-
-      - name: Baixar Godot e Templates
-        run: |
-          wget -q https://github.com/godotengine/godot/releases/download/4.2.1-stable/Godot_v4.2.1-stable_linux.x86_64.zip
-          unzip -q Godot_v4.2.1-stable_linux.x86_64.zip
-          chmod +x Godot_v4.2.1-stable_linux.x86_64
-          mkdir -p ~/.local/share/godot/export_templates/4.2.1.stable
-          wget -q https://github.com/godotengine/godot/releases/download/4.2.1-stable/Godot_v4.2.1-stable_export_templates.tpz
-          unzip -q Godot_v4.2.1-stable_export_templates.tpz
-          mv templates/* ~/.local/share/godot/export_templates/4.2.1.stable/
-
-      - name: Recriar preset e configurar SDK
+      - name: Criar assinatura e preset mínimo
         run: |
           keytool -keyalg RSA -genkeypair -alias androiddebugkey -keypass android -keystore debug.keystore -storepass android -dname "CN=Android Debug,O=Android,C=US" -validity 9999
-          mkdir -p ~/.config/godot
-          echo "export/android/android_sdk_path = \"/usr/local/lib/android/sdk\"" > ~/.config/godot/editor_settings-4.tres
           cat > export_presets.cfg << 'EOF'
           [preset.0]
           name="Android"
@@ -45,31 +27,28 @@ jobs:
           script_encryption_key=""
 
           [preset.0.options]
-          custom_template/debug=""
-          custom_template/release=""
-          gradle_build/use_gradle_build=false
+          gradle_build/use_gradle_build=true
+          gradle_build/gradle_build_directory="res://android/build"
           architectures/armeabi-v7a=true
           architectures/arm64-v8a=true
-          architectures/x86=false
-          architectures/x86_64=false
           version/code=1
           version/name="1.0"
           package/unique_name="com.pedrqz.flappy"
-          application/config/name="com.pedrqz.flappy"
           package/name="Flappy"
           package/signed=true
           keystore/debug="debug.keystore"
           keystore/debug_user="androiddebugkey"
           keystore/debug_password="android"
-          keystore/release=""
-          keystore/release_user=""
-          keystore/release_password=""
           EOF
           cat export_presets.cfg
+          echo "--- SDK ---"
+          echo $ANDROID_HOME
+          ls $ANDROID_HOME/build-tools/
 
-      - name: Exportar APK
+      - name: Instalar template Android e Exportar APK
         run: |
-          ./Godot_v4.2.1-stable_linux.x86_64 --headless --export-debug "Android" flappy.apk
+          godot --headless --install-android-build-template || true
+          godot --headless --export-debug "Android" flappy.apk
           ls -lh flappy.apk
 
       - name: Salvar APK
