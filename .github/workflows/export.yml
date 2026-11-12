@@ -20,13 +20,20 @@ jobs:
         run: |
           keytool -keyalg RSA -genkeypair -alias androiddebugkey -keypass android -keystore debug.keystore -storepass android -dname "CN=Android Debug,O=Android,C=US" -validity 9999
           python3 -c "
-          import pathlib
+          import pathlib, re
           p = pathlib.Path('export_presets.cfg')
           t = p.read_text()
+          # 1. Assinatura
           t = t.replace('keystore/debug=\"\"', 'keystore/debug=\"debug.keystore\"')
           t = t.replace('keystore/debug_user=\"\"', 'keystore/debug_user=\"androiddebugkey\"')
           t = t.replace('keystore/debug_password=\"\"', 'keystore/debug_password=\"android\"')
-          # se as linhas não existirem, adiciona no final da seção options
+          # 2. Nome do pacote - o que estava faltando
+          # Se já tem uma linha application/config/name, troca ela
+          if 'application/config/name=' in t:
+              t = re.sub(r'application/config/name=\".*?\"', 'application/config/name=\"com.pedrqz.flappy\"', t)
+          else:
+              t += '\napplication/config/name=\"com.pedrqz.flappy\"\n'
+          # Garante que a assinatura existe mesmo se as linhas não existiam
           if 'keystore/debug=' not in t:
               t += '\nkeystore/debug=\"debug.keystore\"\nkeystore/debug_user=\"androiddebugkey\"\nkeystore/debug_password=\"android\"\n'
           p.write_text(t)
