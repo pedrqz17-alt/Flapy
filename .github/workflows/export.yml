@@ -5,17 +5,23 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Exportar jogo
-        uses: firebelley/godot-export@v4
-        with:
-          godot_executable_download_url: https://github.com/godotengine/godot/releases/download/4.2.1-stable/Godot_v4.2.1-stable_linux.x86_64.zip
-          godot_export_templates_download_url: https://github.com/godotengine/godot/releases/download/4.2.1-stable/Godot_v4.2.1-stable_export_templates.tpz
-          relative_project_path: ./
-          export_preset: Android
-          export_path: ./flappy.apk
-          use_preset_export_path: false
+
+      - name: Baixar Godot e Templates
+        run: |
+          wget -q https://github.com/godotengine/godot/releases/download/4.2.1-stable/Godot_v4.2.1-stable_linux.x86_64.zip
+          unzip -q Godot_v4.2.1-stable_linux.x86_64.zip
+          chmod +x Godot_v4.2.1-stable_linux.x86_64
+          mkdir -p ~/.local/share/godot/export_templates/4.2.1.stable
+          wget -q https://github.com/godotengine/godot/releases/download/4.2.1-stable/Godot_v4.2.1-stable_export_templates.tpz
+          unzip -q Godot_v4.2.1-stable_export_templates.tpz
+          mv templates/* ~/.local/share/godot/export_templates/4.2.1.stable/
+
+      - name: Exportar APK
+        run: |
+          ./Godot_v4.2.1-stable_linux.x86_64 --headless --export-debug "Android" flappy.apk
+
       - name: Salvar APK
         uses: actions/upload-artifact@v4
         with:
           name: flappy-apk
-          path: ./flappy.apk
+          path: flappy.apk
