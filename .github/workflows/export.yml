@@ -1,0 +1,15 @@
+name: Exportar APK
+on: [push]
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: barichello/godot-ci@master
+        with:
+          godot_version: 4.2
+      - run: godot --headless --export-debug "Android" flappy.apk
+      - uses: actions/upload-artifact@v4
+        with:
+          name: flappy-apk
+          path: flappy.apk
