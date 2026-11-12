@@ -16,12 +16,31 @@ jobs:
           unzip -q Godot_v4.2.1-stable_export_templates.tpz
           mv templates/* ~/.local/share/godot/export_templates/4.2.1.stable/
 
+      - name: Criar assinatura e arrumar preset
+        run: |
+          keytool -keyalg RSA -genkeypair -alias androiddebugkey -keypass android -keystore debug.keystore -storepass android -dname "CN=Android Debug,O=Android,C=US" -validity 9999
+          python3 -c "
+          import pathlib
+          p = pathlib.Path('export_presets.cfg')
+          t = p.read_text()
+          t = t.replace('keystore/debug=\"\"', 'keystore/debug=\"debug.keystore\"')
+          t = t.replace('keystore/debug_user=\"\"', 'keystore/debug_user=\"androiddebugkey\"')
+          t = t.replace('keystore/debug_password=\"\"', 'keystore/debug_password=\"android\"')
+          # se as linhas não existirem, adiciona no final da seção options
+          if 'keystore/debug=' not in t:
+              t += '\nkeystore/debug=\"debug.keystore\"\nkeystore/debug_user=\"androiddebugkey\"\nkeystore/debug_password=\"android\"\n'
+          p.write_text(t)
+          print(p.read_text())
+          "
+
       - name: Exportar APK
         run: |
           ./Godot_v4.2.1-stable_linux.x86_64 --headless --export-debug "Android" flappy.apk
+          ls -lh flappy.apk
 
       - name: Salvar APK
         uses: actions/upload-artifact@v4
         with:
           name: flappy-apk
           path: flappy.apk
+          if-no-files-found: error
