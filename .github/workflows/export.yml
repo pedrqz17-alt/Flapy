@@ -5,11 +5,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: barichello/godot-ci@master
+      - name: Exportar jogo
+        uses: firebelley/godot-export@v6
         with:
-          godot_version: 4.2
-      - run: godot --headless --export-debug "Android" flappy.apk
-      - uses: actions/upload-artifact@v4
+          godot_executable_download_url: https://github.com/godotengine/godot/releases/download/4.2.1-stable/Godot_v4.2.1-stable_linux.x86_64.zip
+          godot_export_templates_download_url: https://github.com/godotengine/godot/releases/download/4.2.1-stable/Godot_v4.2.1-stable_export_templates.tpz
+          relative_project_path: ./
+          export_preset: Android
+          export_path: ./flappy.apk
+          use_preset_export_path: false
+      - name: Salvar APK
+        uses: actions/upload-artifact@v4
         with:
           name: flappy-apk
-          path: flappy.apk
+          path: ./flappy.apk
